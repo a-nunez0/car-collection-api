@@ -5,6 +5,9 @@ const carRoutes = require("./routes/cars");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 const maintenanceRoutes = require("./routes/maintenance");
+const session = require("express-session");
+const passport = require("passport");
+const authRoutes = require("./routes/auth");
 
 dotenv.config();
 
@@ -12,6 +15,20 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "secret",
+    resave: false,
+    saveUninitialized: false
+  })
+);
+
+app.use(passport.initialize());
+
+app.use(passport.session());
+
+app.use("/auth", authRoutes);
 
 app.use("/cars", carRoutes);
 
