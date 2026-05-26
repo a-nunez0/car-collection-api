@@ -3,8 +3,6 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const client = new MongoClient(process.env.MONGODB_URI);
-
 let database;
 
 const initDb = async () => {
@@ -12,16 +10,20 @@ const initDb = async () => {
     return database;
   }
 
-  try {
-    await client.connect();
-    database = client.db("carCollectionDB");
-    console.log("Connected to MongoDB");
-  } catch (err) {
-    console.error(err);
-  }
+  const client = new MongoClient(process.env.MONGODB_URI);
+  await client.connect();
+
+  database = client.db("carCollectionDB");
+  console.log("Connected to MongoDB");
+
+  return database;
 };
 
 const getDb = () => {
+  if (!database) {
+    throw new Error("Database has not been initialized");
+  }
+
   return database;
 };
 
