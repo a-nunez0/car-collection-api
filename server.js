@@ -23,8 +23,13 @@ app.get("/", (req, res) => {
   res.send("Car Collection API");
 });
 
-initDb().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
+initDb()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+})
+
+.catch((err) => {
+    console.error("Failed to connect to MongoDB", err);
 });
