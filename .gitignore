@@ -1,0 +1,6 @@
+ans@Als-MacBook-Air car-collection-api % open .
+ans@Als-MacBook-Air car-collection-api % node_modules
+.env
+zsh: command not found: node_modules
+zsh: command not found: .env
+ans@Als-MacBook-Air car-collection-api % 

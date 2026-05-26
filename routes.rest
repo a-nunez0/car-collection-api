@@ -1,0 +1,59 @@
+GET http://localhost:3000/cars
+
+###
+
+POST http://localhost:3000/cars
+Content-Type: application/json
+
+{
+  "make": "Toyota",
+  "model": "Supra",
+  "year": 2021,
+  "color": "Red",
+  "price": 55000,
+  "mileage": 12000,
+  "fuelType": "Gasoline",
+  "condition": "Used"
+}
+
+###
+
+GET http://localhost:3000/cars/YOUR_ID_HERE
+
+###
+
+PUT http://localhost:3000/cars/YOUR_ID_HERE
+Content-Type: application/json
+
+{
+  "make": "Toyota",
+  "model": "Supra MK5",
+  "year": 2022,
+  "color": "Black",
+  "price": 60000,
+  "mileage": 10000,
+  "fuelType": "Gasoline",
+  "condition": "Used"
+}
+
+###
+
+DELETE http://localhost:3000/cars/YOUR_ID_HERE
+
+###
+
+GET http://localhost:3000/maintenance
+
+###
+
+POST http://localhost:3000/maintenance
+Content-Type: application/json
+
+{
+  "carId": "123456789",
+  "serviceType": "Oil Change",
+  "serviceDate": "2026-05-24",
+  "cost": 89.99,
+  "shopName": "Jiffy Lube",
+  "notes": "Changed synthetic oil and filter"
+}
