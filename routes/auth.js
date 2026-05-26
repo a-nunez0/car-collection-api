@@ -25,8 +25,14 @@ passport.use(
   )
 );
 
-router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
+// Starts GitHub OAuth login
+router.get("/github", (req, res) => {
+  res.redirect(
+    `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${process.env.CALLBACK_URL}&scope=user:email`
+  );
+});
 
+// GitHub sends the user back here after login
 router.get(
   "/github/callback",
   passport.authenticate("github", { failureRedirect: "/auth/status" }),
@@ -35,12 +41,14 @@ router.get(
   }
 );
 
+// Logs out the current user
 router.get("/logout", (req, res) => {
   req.logout(() => {
     res.json({ message: "Logged out successfully" });
   });
 });
 
+// Shows if someone is logged in
 router.get("/status", (req, res) => {
   if (req.user) {
     res.json({
