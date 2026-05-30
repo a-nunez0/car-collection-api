@@ -6,7 +6,7 @@ const validateMaintenance = (record) => {
     !record.carId ||
     !record.serviceType ||
     !record.serviceDate ||
-    !record.cost ||
+    record.cost === undefined ||
     !record.shopName
   ) {
     return false;
@@ -27,14 +27,16 @@ const getAllMaintenance = async (req, res) => {
 const getSingleMaintenance = async (req, res) => {
   try {
     const recordId = new ObjectId(req.params.id);
-    const result = await mongodb.getDb().collection("maintenance").find({ _id: recordId });
-    const record = await result.toArray();
+    const record = await mongodb
+      .getDb()
+      .collection("maintenance")
+      .findOne({ _id: recordId });
 
-    if (record.length === 0) {
+    if (!record) {
       return res.status(404).json({ message: "Maintenance record not found" });
     }
 
-    res.status(200).json(record[0]);
+    res.status(200).json(record);
   } catch (err) {
     res.status(400).json({ message: "Invalid maintenance ID" });
   }
@@ -53,6 +55,21 @@ const createMaintenance = async (req, res) => {
 
     if (!validateMaintenance(record)) {
       return res.status(400).json({ message: "Please provide all required maintenance fields." });
+    }
+
+    // Make sure carId is a real MongoDB id
+    if (!ObjectId.isValid(record.carId)) {
+      return res.status(400).json({ message: "Invalid car ID" });
+    }
+
+    // Check if the car exists
+    const car = await mongodb
+      .getDb()
+      .collection("cars")
+      .findOne({ _id: new ObjectId(record.carId) });
+
+    if (!car) {
+      return res.status(404).json({ message: "Car not found. Maintenance must belong to a real car." });
     }
 
     const response = await mongodb.getDb().collection("maintenance").insertOne(record);
@@ -77,6 +94,20 @@ const updateMaintenance = async (req, res) => {
 
     if (!validateMaintenance(record)) {
       return res.status(400).json({ message: "Please provide all required maintenance fields." });
+    }
+
+    if (!ObjectId.isValid(record.carId)) {
+      return res.status(400).json({ message: "Invalid car ID" });
+    }
+
+    // Check if the car exists
+    const car = await mongodb
+      .getDb()
+      .collection("cars")
+      .findOne({ _id: new ObjectId(record.carId) });
+
+    if (!car) {
+      return res.status(404).json({ message: "Car not found. Maintenance must belong to a real car." });
     }
 
     const response = await mongodb
