@@ -1,339 +1,412 @@
 {
-  "swagger": "2.0",
-  "info": {
-    "title": "Car Collection API",
-    "description": "API for managing a car collection",
-    "version": "1.0.0"
-  },
-  "host": "localhost:3000",
-  "basePath": "/",
-  "schemes": [
-    "http"
-  ],
-  "paths": {
-    "/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
+    "swagger": "2.0",
+    "info": {
+      "title": "Car Collection API",
+      "description": "API for managing a car collection and related maintenance records",
+      "version": "1.0.0"
     },
-    "/cars/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+    "host": "localhost:3000",
+    "basePath": "/",
+    "schemes": ["http"],
+    "paths": {
+      "/": {
+        "get": {
+          "description": "API home route",
+          "responses": {
+            "200": {
+              "description": "Car Collection API is running"
+            }
           }
         }
       },
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "make": {
-                  "example": "any"
-                },
-                "model": {
-                  "example": "any"
-                },
-                "year": {
-                  "example": "any"
-                },
-                "color": {
-                  "example": "any"
-                },
-                "price": {
-                  "example": "any"
-                },
-                "mileage": {
-                  "example": "any"
-                },
-                "fuelType": {
-                  "example": "any"
-                },
-                "condition": {
-                  "example": "any"
+      "/cars/": {
+        "get": {
+          "description": "Get all cars in the collection",
+          "responses": {
+            "200": {
+              "description": "List of cars returned successfully"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "post": {
+          "description": "Create a new car",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "required": [
+                  "make",
+                  "model",
+                  "year",
+                  "color",
+                  "price",
+                  "mileage",
+                  "fuelType",
+                  "condition"
+                ],
+                "properties": {
+                  "make": {
+                    "type": "string",
+                    "example": "Toyota"
+                  },
+                  "model": {
+                    "type": "string",
+                    "example": "Supra"
+                  },
+                  "year": {
+                    "type": "number",
+                    "example": 2021
+                  },
+                  "color": {
+                    "type": "string",
+                    "example": "Red"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 55000
+                  },
+                  "mileage": {
+                    "type": "number",
+                    "example": 12000
+                  },
+                  "fuelType": {
+                    "type": "string",
+                    "example": "Gasoline"
+                  },
+                  "condition": {
+                    "type": "string",
+                    "example": "Used"
+                  }
                 }
               }
             }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/cars/{id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
+          ],
+          "responses": {
+            "201": {
+              "description": "Car created successfully"
+            },
+            "400": {
+              "description": "Missing required car fields"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
           }
         }
       },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "make": {
-                  "example": "any"
-                },
-                "model": {
-                  "example": "any"
-                },
-                "year": {
-                  "example": "any"
-                },
-                "color": {
-                  "example": "any"
-                },
-                "price": {
-                  "example": "any"
-                },
-                "mileage": {
-                  "example": "any"
-                },
-                "fuelType": {
-                  "example": "any"
-                },
-                "condition": {
-                  "example": "any"
+      "/cars/{id}": {
+        "get": {
+          "description": "Get one car by its MongoDB ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "MongoDB ID of the car"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Car returned successfully"
+            },
+            "400": {
+              "description": "Invalid car ID"
+            },
+            "404": {
+              "description": "Car not found"
+            }
+          }
+        },
+        "put": {
+          "description": "Update one car by its MongoDB ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "MongoDB ID of the car"
+            },
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "required": [
+                  "make",
+                  "model",
+                  "year",
+                  "color",
+                  "price",
+                  "mileage",
+                  "fuelType",
+                  "condition"
+                ],
+                "properties": {
+                  "make": {
+                    "type": "string",
+                    "example": "Toyota"
+                  },
+                  "model": {
+                    "type": "string",
+                    "example": "Supra"
+                  },
+                  "year": {
+                    "type": "number",
+                    "example": 2022
+                  },
+                  "color": {
+                    "type": "string",
+                    "example": "Blue"
+                  },
+                  "price": {
+                    "type": "number",
+                    "example": 57000
+                  },
+                  "mileage": {
+                    "type": "number",
+                    "example": 13000
+                  },
+                  "fuelType": {
+                    "type": "string",
+                    "example": "Gasoline"
+                  },
+                  "condition": {
+                    "type": "string",
+                    "example": "Used"
+                  }
                 }
               }
             }
+          ],
+          "responses": {
+            "204": {
+              "description": "Car updated successfully"
+            },
+            "400": {
+              "description": "Invalid car ID or missing required fields"
+            },
+            "404": {
+              "description": "Car not found"
+            }
           }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/maintenance/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+        },
+        "delete": {
+          "description": "Delete one car by its MongoDB ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "MongoDB ID of the car"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Car deleted successfully"
+            },
+            "400": {
+              "description": "Invalid car ID"
+            },
+            "404": {
+              "description": "Car not found"
+            }
           }
         }
       },
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "carId": {
-                  "example": "any"
-                },
-                "serviceType": {
-                  "example": "any"
-                },
-                "serviceDate": {
-                  "example": "any"
-                },
-                "cost": {
-                  "example": "any"
-                },
-                "shopName": {
-                  "example": "any"
-                },
-                "notes": {
-                  "example": "any"
+      "/maintenance/": {
+        "get": {
+          "description": "Get all maintenance records",
+          "responses": {
+            "200": {
+              "description": "List of maintenance records returned successfully"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "post": {
+          "description": "Create a maintenance record for an existing car. The carId must match a valid car ID.",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "required": [
+                  "carId",
+                  "serviceType",
+                  "serviceDate",
+                  "cost",
+                  "shopName"
+                ],
+                "properties": {
+                  "carId": {
+                    "type": "string",
+                    "example": "683b9a2f3a8f123456789abc"
+                  },
+                  "serviceType": {
+                    "type": "string",
+                    "example": "Oil Change"
+                  },
+                  "serviceDate": {
+                    "type": "string",
+                    "example": "2026-05-30"
+                  },
+                  "cost": {
+                    "type": "number",
+                    "example": 75
+                  },
+                  "shopName": {
+                    "type": "string",
+                    "example": "Jiffy Lube"
+                  },
+                  "notes": {
+                    "type": "string",
+                    "example": "Changed oil and filter"
+                  }
                 }
               }
             }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/maintenance/{id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
+          ],
+          "responses": {
+            "201": {
+              "description": "Maintenance record created successfully"
+            },
+            "400": {
+              "description": "Invalid car ID or missing required maintenance fields"
+            },
+            "404": {
+              "description": "Car not found"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
           }
         }
       },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "carId": {
-                  "example": "any"
-                },
-                "serviceType": {
-                  "example": "any"
-                },
-                "serviceDate": {
-                  "example": "any"
-                },
-                "cost": {
-                  "example": "any"
-                },
-                "shopName": {
-                  "example": "any"
-                },
-                "notes": {
-                  "example": "any"
+      "/maintenance/{id}": {
+        "get": {
+          "description": "Get maintenance by maintenance record ID. If not found, this route can also search by car ID if your controller supports it.",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "MongoDB ID of the maintenance record or car"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Maintenance record or records returned successfully"
+            },
+            "400": {
+              "description": "Invalid ID"
+            },
+            "404": {
+              "description": "Maintenance record not found"
+            }
+          }
+        },
+        "put": {
+          "description": "Update one maintenance record by its maintenance ID. The carId in the body must match an existing car.",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "MongoDB ID of the maintenance record"
+            },
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "required": [
+                  "carId",
+                  "serviceType",
+                  "serviceDate",
+                  "cost",
+                  "shopName"
+                ],
+                "properties": {
+                  "carId": {
+                    "type": "string",
+                    "example": "683b9a2f3a8f123456789abc"
+                  },
+                  "serviceType": {
+                    "type": "string",
+                    "example": "Tire Rotation"
+                  },
+                  "serviceDate": {
+                    "type": "string",
+                    "example": "2026-05-30"
+                  },
+                  "cost": {
+                    "type": "number",
+                    "example": 45
+                  },
+                  "shopName": {
+                    "type": "string",
+                    "example": "Discount Tire"
+                  },
+                  "notes": {
+                    "type": "string",
+                    "example": "Rotated all four tires"
+                  }
                 }
               }
             }
+          ],
+          "responses": {
+            "204": {
+              "description": "Maintenance record updated successfully"
+            },
+            "400": {
+              "description": "Invalid maintenance ID, invalid car ID, or missing required fields"
+            },
+            "404": {
+              "description": "Maintenance record or car not found"
+            }
           }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
+        },
+        "delete": {
+          "description": "Delete one maintenance record by its maintenance ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "description": "MongoDB ID of the maintenance record"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Maintenance record deleted successfully"
+            },
+            "400": {
+              "description": "Invalid maintenance ID"
+            },
+            "404": {
+              "description": "Maintenance record not found"
+            }
           }
         }
       }
     }
   }
-}
