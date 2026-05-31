@@ -25,21 +25,40 @@ const getAllMaintenance = async (req, res) => {
 };
 
 const getSingleMaintenance = async (req, res) => {
-  try {
-    const recordId = new ObjectId(req.params.id);
-    const record = await mongodb
-      .getDb()
-      .collection("maintenance")
-      .findOne({ _id: recordId });
-
-    if (!record) {
-      return res.status(404).json({ message: "Maintenance record not found" });
+    try {
+      const id = req.params.id;
+  
+      if (!ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+  
+      // First, search by maintenance record ID
+      const record = await mongodb
+        .getDb()
+        .collection("maintenance")
+        .findOne({ _id: new ObjectId(id) });
+  
+      if (record) {
+        return res.status(200).json(record);
+      }
+  
+      // If no maintenance record found, search by carId
+      const recordsByCar = await mongodb
+        .getDb()
+        .collection("maintenance")
+        .find({ carId: id })
+        .toArray();
+  
+      if (recordsByCar.length === 0) {
+        return res.status(404).json({
+          message: "No maintenance record found with that maintenance ID or car ID"
+        });
+      }
+  
+      res.status(200).json(recordsByCar);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
-
-    res.status(200).json(record);
-  } catch (err) {
-    res.status(400).json({ message: "Invalid maintenance ID" });
-  }
 };
 
 const createMaintenance = async (req, res) => {
